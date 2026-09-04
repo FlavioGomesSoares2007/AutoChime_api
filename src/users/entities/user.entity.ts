@@ -14,6 +14,6 @@ export class User {
   @Column({ length: 255, type: 'varchar' })
   password: string;
 
-  @Column({ nullable: true, length: 255, type: 'varchar' })
-  refreshToken?: string;
+  @Column({ nullable: true, type: 'text' })
+  refreshToken?: string | null;
 }
