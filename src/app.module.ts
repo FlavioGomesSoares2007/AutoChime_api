@@ -4,6 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth/auth.module';
+import { BellControlGateway } from './bell-control/bell-control.gateway';
+import { BellControlController } from './bell-control/bell-control.controller';
+import { BellControlModule } from './bell-control/bell-control.module';
 
 @Module({
   imports: [
@@ -25,14 +28,12 @@ import { AuthModule } from './auth/auth.module';
         synchronize: true,
       }),
     }),
-
+    BellControlModule,
     UsersModule,
-
     MailModule,
-
     AuthModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [BellControlController],
+  providers: [BellControlGateway],
 })
 export class AppModule {}
