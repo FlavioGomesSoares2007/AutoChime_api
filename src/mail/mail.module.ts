@@ -14,12 +14,17 @@ import { MailService } from './mail.service';
         transport: {
           host: config.get<string>('MAIL_HOST'),
           port: Number(config.get<string>('MAIL_PORT')),
+
           secure: false,
 
           auth: {
             user: config.get<string>('MAIL_USER'),
             pass: config.get<string>('MAIL_PASS'),
           },
+
+          connectionTimeout: 10000,
+          greetingTimeout: 10000,
+          socketTimeout: 10000,
 
           tls: {
             rejectUnauthorized: false,
