@@ -7,10 +7,14 @@ import { AuthModule } from './auth/auth.module';
 import { BellControlGateway } from './bell-control/bell-control.gateway';
 import { BellControlController } from './bell-control/bell-control.controller';
 import { BellControlModule } from './bell-control/bell-control.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './tasks/tasks.service';
+import { TasksModule } from './tasks/tasks.module';
 import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -18,6 +22,7 @@ import { SchedulesModule } from './schedules/schedules.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
+      
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get<string>('DB_HOST'),
@@ -39,8 +44,9 @@ import { SchedulesModule } from './schedules/schedules.module';
     MailModule,
     AuthModule,
     SchedulesModule,
+    TasksModule,
   ],
   controllers: [BellControlController],
-  providers: [BellControlGateway],
+  providers: [BellControlGateway, TasksService],
 })
 export class AppModule {}
