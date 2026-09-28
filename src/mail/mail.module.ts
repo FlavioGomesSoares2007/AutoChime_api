@@ -17,6 +17,8 @@ import { MailService } from './mail.service';
 
           secure: false,
 
+          family: 4,
+
           auth: {
             user: config.get<string>('MAIL_USER'),
             pass: config.get<string>('MAIL_PASS'),
