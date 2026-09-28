@@ -28,7 +28,7 @@ async requestRegistration(createUserDto: CreateUserDto) {
     where: { email: createUserDto.email },
   });
 
-  console.log('2 - verificou email');
+  console.log('2 - banco respondeu');
 
   if (user) {
     throw new ConflictException('Email already exists');
@@ -39,7 +39,7 @@ async requestRegistration(createUserDto: CreateUserDto) {
     10,
   );
 
-  console.log('3 - senha hash');
+  console.log('3 - bcrypt terminou');
 
   const code = Math.floor(
     100000 + Math.random() * 900000,
@@ -56,7 +56,7 @@ async requestRegistration(createUserDto: CreateUserDto) {
     code: codeHash,
   });
 
-  console.log('5 - token criado');
+  console.log('5 - JWT criado');
 
   await this.mailService.sendVerificationCode(
     createUserDto.email,
