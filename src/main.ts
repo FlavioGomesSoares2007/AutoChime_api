@@ -10,17 +10,10 @@ async function bootstrap() {
     throw new Error('FRONTEND_URL não foi definida');
   }
 
+  console.log('CORS permitido:', frontendUrl);
+
   app.enableCors({
-    origin: (origi:any, callback:any) => {
-      if (!origin || origin === frontendUrl) {
-        return callback(null, true);
-      }
-
-      console.log(`CORS bloqueado: ${origin}`);
-      console.log(`Origem permitida: ${frontendUrl}`);
-
-      return callback(new Error('Acesso bloqueado pelo CORS'));
-    },
+    origin: frontendUrl,
 
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
