@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Schedules } from '../../schedules/entities/schedule.entity';
 
 @Entity('users')
 export class User {
@@ -16,4 +17,7 @@ export class User {
 
   @Column({ nullable: true, type: 'text' })
   refreshToken?: string | null;
+
+  @OneToMany(() => Schedules, (schedule) => schedule.schoolId)
+  Schedules: Schedules[];
 }

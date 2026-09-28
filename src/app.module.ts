@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { BellControlGateway } from './bell-control/bell-control.gateway';
 import { BellControlController } from './bell-control/bell-control.controller';
 import { BellControlModule } from './bell-control/bell-control.module';
+import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
@@ -24,14 +25,20 @@ import { BellControlModule } from './bell-control/bell-control.module';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASS'),
         database: configService.get<string>('DB_NAME'),
+        
+        ssl: {
+          rejectUnauthorized: false,
+        },
+        
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
       }),
     }),
     BellControlModule,
     UsersModule,
     MailModule,
     AuthModule,
+    SchedulesModule,
   ],
   controllers: [BellControlController],
   providers: [BellControlGateway],
