@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -7,22 +6,29 @@ async function bootstrap() {
 
   const frontendUrl = process.env.FRONTEND_URL;
 
+  if (!frontendUrl) {
+    throw new Error('FRONTEND_URL não foi definida');
+  }
+
   app.enableCors({
-    origin: (origin: any, callback: any) => {
-      if (!origin) {
+    origin: (origi:any, callback:any) => {
+      if (!origin || origin === frontendUrl) {
         return callback(null, true);
       }
 
-      if (origin === frontendUrl) {
-        return callback(null, true);
-      }
+      console.log(`CORS bloqueado: ${origin}`);
+      console.log(`Origem permitida: ${frontendUrl}`);
 
       return callback(new Error('Acesso bloqueado pelo CORS'));
     },
 
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+    ],
 
     credentials: true,
   });
