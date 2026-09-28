@@ -26,8 +26,10 @@ export class MailService {
         `,
       });
     } catch (error) {
+      console.error('ERRO SMTP:', error);
+
       throw new InternalServerErrorException(
-        'Falha ao enviar o e-mail de verificação. Verifique as credenciais SMTP.',
+        'Falha ao enviar o e-mail de verificação.',
       );
     }
   }
