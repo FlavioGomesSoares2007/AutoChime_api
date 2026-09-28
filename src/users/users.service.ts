@@ -22,19 +22,32 @@ export class UsersService {
   ) {}
 
 async requestRegistration(createUserDto: CreateUserDto) {
+  console.log('1 - iniciou cadastro');
+
   const user = await this.userRepository.findOne({
     where: { email: createUserDto.email },
   });
+
+  console.log('2 - verificou email');
 
   if (user) {
     throw new ConflictException('Email already exists');
   }
 
-  const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+  const hashedPassword = await bcrypt.hash(
+    createUserDto.password,
+    10,
+  );
 
-  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  console.log('3 - senha hash');
+
+  const code = Math.floor(
+    100000 + Math.random() * 900000,
+  ).toString();
 
   const codeHash = await bcrypt.hash(code, 10);
+
+  console.log('4 - código criado');
 
   const signupToken = this.jwtService.sign({
     name: createUserDto.name,
@@ -43,18 +56,14 @@ async requestRegistration(createUserDto: CreateUserDto) {
     code: codeHash,
   });
 
-  try {
-    await this.mailService.sendVerificationCode(
-      createUserDto.email,
-      code,
-    );
-  } catch (error) {
-    console.error('ERRO AO ENVIAR EMAIL:', error);
+  console.log('5 - token criado');
 
-    throw new BadRequestException(
-      'Não foi possível enviar o código de verificação.',
-    );
-  }
+  await this.mailService.sendVerificationCode(
+    createUserDto.email,
+    code,
+  );
+
+  console.log('6 - email enviado');
 
   return {
     message: 'Verification code sent to email',
