@@ -5,8 +5,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const allowedOrigins = [
-    'https://auto-chime-cli.vercel.app',
-    'http://localhost:3000',             
+    'https://auto-chime-cli.vercel.app',       
   ];
 
   app.enableCors({
