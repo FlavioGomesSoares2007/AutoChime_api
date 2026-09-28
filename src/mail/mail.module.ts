@@ -12,12 +12,9 @@ import { MailService } from './mail.service';
 
       useFactory: (config: ConfigService) => ({
         transport: {
-          host: config.get<string>('MAIL_HOST'),
-          port: Number(config.get<string>('MAIL_PORT')),
-
-          secure: false,
-
-          family: 4,
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true,
 
           auth: {
             user: config.get<string>('MAIL_USER'),
@@ -27,10 +24,6 @@ import { MailService } from './mail.service';
           connectionTimeout: 10000,
           greetingTimeout: 10000,
           socketTimeout: 10000,
-
-          tls: {
-            rejectUnauthorized: false,
-          },
         },
 
         defaults: {
