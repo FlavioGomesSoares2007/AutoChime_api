@@ -17,17 +17,7 @@ export class UsersController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.requestRegistration(createUserDto);
-  }
-
-  @Post('confirm')
-  async confirmRegistration(
-    @Body() body: { code: string; signupToken: string },
-  ) {
-    return await this.usersService.confirmRegistration(
-      body.code,
-      body.signupToken,
-    );
+    return this.usersService.register(createUserDto);
   }
 
   @Get(':id')

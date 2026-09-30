@@ -17,92 +17,31 @@ import { JwtService } from '@nestjs/jwt';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly mailService: MailService,
-    private readonly jwtService: JwtService,
   ) {}
 
-async requestRegistration(createUserDto: CreateUserDto) {
-  console.log('1 - iniciou cadastro');
+  async register(createUserDto: CreateUserDto) {
+    const existingUser = await this.userRepository.findOne({
+      where: { email: createUserDto.email },
+    });
 
-  const user = await this.userRepository.findOne({
-    where: { email: createUserDto.email },
-  });
-
-  console.log('2 - banco respondeu');
-
-  if (user) {
-    throw new ConflictException('Email already exists');
-  }
-
-  const hashedPassword = await bcrypt.hash(
-    createUserDto.password,
-    10,
-  );
-
-  console.log('3 - bcrypt terminou');
-
-  const code = Math.floor(
-    100000 + Math.random() * 900000,
-  ).toString();
-
-  const codeHash = await bcrypt.hash(code, 10);
-
-  console.log('4 - código criado');
-
-  const signupToken = this.jwtService.sign({
-    name: createUserDto.name,
-    email: createUserDto.email,
-    passwordHash: hashedPassword,
-    code: codeHash,
-  });
-
-  console.log('5 - JWT criado');
-
-  await this.mailService.sendVerificationCode(
-    createUserDto.email,
-    code,
-  );
-
-  console.log('6 - email enviado');
-
-  return {
-    message: 'Verification code sent to email',
-    signupToken,
-  };
-}
-
-  async confirmRegistration(userCode: string, signupToken: string) {
-    type payload = {
-      name: string;
-      email: string;
-      passwordHash: string;
-      code: string;
-    };
-
-    let payload: payload;
-
-    try {
-      payload = this.jwtService.verify(signupToken);
-    } catch {
-      throw new BadRequestException('Invalid or expired token');
+    if (existingUser) {
+      throw new ConflictException('Email já cadastrado');
     }
 
-    const isCodeValid = await bcrypt.compare(userCode, payload.code);
-    
-    if (!isCodeValid) {
-      throw new BadRequestException('Incorrect verification code');
-    }
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
     const newUser = this.userRepository.create({
-      name: payload.name,
-      email: payload.email,
-      password: payload.passwordHash,
+      name: createUserDto.name,
+      email: createUserDto.email,
+      password: hashedPassword,
     });
 
     const savedUser = await this.userRepository.save(newUser);
+
     const { password, ...userWithoutPassword } = savedUser;
+
     return {
-      message: 'User registered successfully',
+      message: 'Usuário cadastrado com sucesso',
       user: userWithoutPassword,
     };
   }
